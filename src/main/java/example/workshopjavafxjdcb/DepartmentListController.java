@@ -1,19 +1,28 @@
 package example.workshopjavafxjdcb;
 
+import example.workshopjavafxjdcb.gui.util.Alerts;
+import example.workshopjavafxjdcb.gui.util.Utils;
 import example.workshopjavafxjdcb.model.entities.Department;
 import example.workshopjavafxjdcb.model.services.DepartmentService;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableIntegerValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.*;
+import javafx.scene.Scene;
+import javafx.scene.layout.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.scene.control.Alert.AlertType;
 
 
+
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -37,8 +46,9 @@ public class DepartmentListController implements Initializable {
     private ObservableList<Department> obsList;
 
     @FXML
-    public void onBtNewAction(){
-        System.out.println("onBtNewAction");
+    public void onBtNewAction(ActionEvent event){
+        Stage parentStage = Utils.currentStage(event);
+        createDialogForm("DepartmentForm.fxml", parentStage);
     }
 
     public void setDepartmentService(DepartmentService service){
@@ -51,11 +61,13 @@ public class DepartmentListController implements Initializable {
     }
 
     private void initializeNodes() {
-        tableColumnId.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getId().toString()));
-        tableColumnName.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getName()));
+        if(tableViewDepartments != null){
+            tableColumnId.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getId().toString()));
+            tableColumnName.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getName()));
 
-        Stage stage = (Stage) Main.getMainScene().getWindow();
-        tableViewDepartments.prefHeightProperty().bind(stage.heightProperty());
+            Stage stage = (Stage) Main.getMainScene().getWindow();
+            tableViewDepartments.prefHeightProperty().bind(stage.heightProperty());
+        }
     }
 
     public void updateTableView(){
@@ -65,5 +77,24 @@ public class DepartmentListController implements Initializable {
         List<Department> list = service.findAll();
         obsList = FXCollections.observableList(list);
         tableViewDepartments.setItems(obsList);
+    }
+
+    private void createDialogForm(String absoluteName, Stage parentStage){
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource(absoluteName));
+            Pane pane = loader.load();
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Enter Department data");
+            dialogStage.setScene(new Scene(pane));
+            dialogStage.setResizable(false);
+            dialogStage.initOwner(parentStage);
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.showAndWait();
+
+        }catch (IOException e){
+            Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
+            e.printStackTrace();
+        }
     }
 }
