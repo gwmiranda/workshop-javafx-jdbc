@@ -23,6 +23,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -40,6 +41,16 @@ public class SellerListController implements Initializable, DataChangeListener {
 
     @FXML
     private TableColumn<Seller, String> tableColumnName;
+
+    @FXML
+    private TableColumn<Seller, String> tableColumnEmail;
+
+    @FXML
+    private TableColumn<Seller, String> tableColumnBirthDate;
+
+    @FXML
+    private TableColumn<Seller, String> tableColumnBaseSalary;
+
 
     @FXML
     private TableColumn<Seller, Seller> tableColumnEDIT;
@@ -72,6 +83,9 @@ public class SellerListController implements Initializable, DataChangeListener {
         if(tableViewSellers != null){
             tableColumnId.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getId().toString()));
             tableColumnName.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getName()));
+            tableColumnEmail.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getEmail()));
+            tableColumnBirthDate.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getBirthDate().toString()));
+            tableColumnBaseSalary.setCellValueFactory(cd -> new SimpleStringProperty(cd.getValue().getBaseSalary().toString()));
 
             Stage stage = (Stage) Main.getMainScene().getWindow();
             tableViewSellers.prefHeightProperty().bind(stage.heightProperty());
