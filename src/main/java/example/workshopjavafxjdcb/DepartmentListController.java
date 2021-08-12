@@ -2,6 +2,7 @@ package example.workshopjavafxjdcb;
 
 import example.workshopjavafxjdcb.gui.util.Alerts;
 import example.workshopjavafxjdcb.gui.util.Utils;
+import example.workshopjavafxjdcb.gui.util.listeners.DataChangeListener;
 import example.workshopjavafxjdcb.model.entities.Department;
 import example.workshopjavafxjdcb.model.services.DepartmentService;
 import javafx.beans.property.SimpleStringProperty;
@@ -27,9 +28,10 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class DepartmentListController implements Initializable {
+public class DepartmentListController implements Initializable, DataChangeListener {
 
     private DepartmentService service;
+
 
     @FXML
     private TableView<Department> tableViewDepartments;
@@ -88,6 +90,7 @@ public class DepartmentListController implements Initializable {
             DepartmentFormController controller = loader.getController();
             controller.setDepartment(obj);
             controller.setDepartmentService(new DepartmentService());
+            controller.subscribeDataChangeListener(this);
             controller.updateFormData();
 
             Stage dialogStage = new Stage();
@@ -102,5 +105,10 @@ public class DepartmentListController implements Initializable {
             Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onDataChanged() {
+        updateTableView();
     }
 }
