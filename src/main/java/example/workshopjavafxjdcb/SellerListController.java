@@ -5,6 +5,7 @@ import example.workshopjavafxjdcb.gui.util.Alerts;
 import example.workshopjavafxjdcb.gui.util.Utils;
 import example.workshopjavafxjdcb.gui.util.listeners.DataChangeListener;
 import example.workshopjavafxjdcb.model.entities.Seller;
+import example.workshopjavafxjdcb.model.services.DepartmentService;
 import example.workshopjavafxjdcb.model.services.SellerService;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
@@ -110,7 +111,8 @@ public class SellerListController implements Initializable, DataChangeListener {
 
             SellerFormController controller = loader.getController();
             controller.setSeller(obj);
-            controller.setSellerService(new SellerService());
+            controller.setServices(new SellerService(), new DepartmentService());
+            controller.loadAssociatedObjects();
             controller.subscribeDataChangeListener(this);
             controller.updateFormData();
 
@@ -182,7 +184,6 @@ public class SellerListController implements Initializable, DataChangeListener {
             }catch (DbIntegrityException e){
                 Alerts.showAlert("Error removing object", null, e.getMessage(), AlertType.ERROR);
             }
-
         }
     }
 }
